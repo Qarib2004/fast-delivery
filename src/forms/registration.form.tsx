@@ -1,14 +1,16 @@
 "use client";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Input, Button, Form } from "@heroui/react";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { registerUser } from "@/actions/user.action";
+import { toast } from "sonner";
 
 interface IProps {
   onClose: () => void;
-  onSwitchToLogin: () => void; // <-- пропс для переключения на LoginModal
+  onSwitchToLogin: () => void; 
 }
 
 const registrationSchema = z
@@ -28,17 +30,39 @@ type FormData = z.infer<typeof registrationSchema>;
 const RegistrationForm = ({ onClose, onSwitchToLogin }: IProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [serverError, setServerError] = useState<string>('');
+
 
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<FormData>({
     resolver: zodResolver(registrationSchema),
   });
 
-  const onSubmit = async (data: FormData) => {
-    console.log("Form submitted:", data);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    reset();
-    onClose();
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    try {
+      toast.loading('Registering user...');
+  
+      const result = await registerUser({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      });
+  
+      if (result.error) {
+        toast.error(result.error); 
+        return;
+      }
+  
+      toast.success('Registration successful!'); 
+      reset();
+      onClose();
+    } catch (error) {
+      console.error('Submission error:', error);
+      toast.error('An unexpected error occurred'); 
+    }
   };
+  
+
+  
 
   return (
     <Form className="w-full space-y-5" onSubmit={handleSubmit(onSubmit)}>
