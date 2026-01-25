@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Input, Button, Form } from "@heroui/react";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { registerUser } from "@/actions/user.action";
+import { registerUser } from "@/actions/auth.action";
 import { toast } from "sonner";
 
 interface IProps {

@@ -2,20 +2,14 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Input, Button, Form, Checkbox } from "@heroui/react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { FormData, signInSchema } from "@/schema/zod";
 
 interface IProps {
   onClose: () => void;
 }
 
-const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-});
-
-type FormData = z.infer<typeof loginSchema>;
 
 const LoginForm = ({ onClose }: IProps) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,7 +21,7 @@ const LoginForm = ({ onClose }: IProps) => {
     formState: { errors, isSubmitting },
     reset,
   } = useForm<FormData>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(signInSchema),
   });
 
   const onSubmit = async (data: FormData) => {
