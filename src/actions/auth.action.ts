@@ -1,12 +1,14 @@
 "use server";
-import { signIn } from "@/auth/auth";
-import { IRegisterUserParams } from "@/types/form-data";
+import { signIn, signOut } from "@/auth/auth";
+import { IFormData, IRegisterUserParams } from "@/types/form-data";
+import { saltAndHashPassword } from "@/utils/password";
 import prisma from "@/utils/prisma";
 import bcrypt from "bcryptjs";
 
-export async function registerUser(params: IRegisterUserParams) {
+export async function registerUser(params: IFormData) {
+  const {name,email,password,confirmPassword} = params
   try {
-    const hashedPassword = await bcrypt.hash(params.password, 10);
+    const hashedPassword = await saltAndHashPassword(password);
 
     const existingUser = await prisma.user.findUnique({
       where: { email: params.email },
@@ -48,6 +50,10 @@ export async function signInWithCredentials(email: string, password: string) {
       redirect: false,
     });
 
+    if (result?.error) {
+      return { error: result.error };
+    }
+
     return result;
   } catch (error) {
     console.error("Error authorization", error);
@@ -58,3 +64,16 @@ export async function signInWithCredentials(email: string, password: string) {
 
 
 
+
+export async function signOutFunc(){
+ 
+  try {
+    const result = await signOut({redirect:false})
+    console.log('result '+result)
+    return result
+  } catch (error) {
+    console.error('Error for authorization ' +error)
+    throw error
+  }
+  
+}

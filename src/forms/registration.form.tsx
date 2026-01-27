@@ -7,6 +7,7 @@ import { Input, Button, Form } from "@heroui/react";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { registerUser } from "@/actions/auth.action";
 import { toast } from "sonner";
+import { IFormData, IRegisterUserParams } from "@/types/form-data";
 
 interface IProps {
   onClose: () => void;
@@ -39,13 +40,15 @@ const RegistrationForm = ({ onClose, onSwitchToLogin }: IProps) => {
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-      toast.loading('Registering user...');
-  
+      const toastId = toast.loading('Registering user...');  
       const result = await registerUser({
         name: data.name,
         email: data.email,
         password: data.password,
+        confirmPassword:data.confirmPassword
       });
+
+      toast.dismiss(toastId);
   
       if (result.error) {
         toast.error(result.error); 

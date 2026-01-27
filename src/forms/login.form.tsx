@@ -2,18 +2,22 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input, Button, Form, Checkbox } from "@heroui/react";
+import { Input, Button, Form } from "@heroui/react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { FormData, signInSchema } from "@/schema/zod";
+import { signInWithCredentials } from "@/actions/auth.action";
+import { toast } from "sonner";
+import { useAuthStore } from "@/store/auth.store";
+import { useRouter } from "next/navigation";
 
 interface IProps {
   onClose: () => void;
 }
 
-
 const LoginForm = ({ onClose }: IProps) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const { setAuthState } = useAuthStore();
+  const router = useRouter();
 
   const {
     register,
@@ -25,10 +29,26 @@ const LoginForm = ({ onClose }: IProps) => {
   });
 
   const onSubmit = async (data: FormData) => {
-    console.log("Form submitted:", data, "Remember me:", rememberMe);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    reset();
-    onClose();
+    const toastId = toast.loading('Signing in...');
+    
+    try {
+      const result = await signInWithCredentials(data.email, data.password);
+      console.log("result:",result)
+      toast.dismiss(toastId);
+
+      if (result?.error) {
+        toast.error(result.error);
+        return;
+      }
+
+      toast.success('Login successful!');
+      
+        return result  
+    } catch (error) {
+      toast.dismiss(toastId);
+      console.error('Login error:', error);
+      toast.error('An unexpected error occurred');
+    }
   };
 
   return (
@@ -85,25 +105,6 @@ const LoginForm = ({ onClose }: IProps) => {
           }}
         />
       </div>
-
-      {/* <div className="flex items-center justify-between">
-        <Checkbox
-          size="sm"
-          isSelected={rememberMe}
-          onValueChange={setRememberMe}
-          classNames={{
-            wrapper: "after:bg-orange-500 group-data-[selected=true]:border-orange-500",
-          }}
-        >
-          <span className="text-sm text-gray-700">Remember me</span>
-        </Checkbox>
-        <button
-          type="button"
-          className="text-sm text-orange-600 hover:text-orange-700 hover:underline font-medium"
-        >
-          Forgot password?
-        </button>
-      </div> */}
 
       <div className="flex gap-3 pt-2">
         <Button

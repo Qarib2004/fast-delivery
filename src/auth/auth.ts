@@ -39,7 +39,7 @@ export const { handlers,signIn,signOut, auth } = NextAuth({
             throw new Error("Invalid credentials.")
           }
 
-          return {id:user.id,email:user.email}
+          return {id:user.id,email:user.email,name:user.name}
         } catch (error) {
           if (error instanceof ZodError) {
             return null
@@ -50,4 +50,17 @@ export const { handlers,signIn,signOut, auth } = NextAuth({
       },
     }),
   ],
+  session:{
+    strategy:'jwt',
+    maxAge:3600,
+  },
+  secret:process.env.NEXTAUTH_SECRET,
+  callbacks:{
+    async jwt({token,user}){
+      if(user){
+        token.id=user.id
+      }
+   return token
+    }
+  }
 })
