@@ -7,8 +7,9 @@ import { Providers } from "@/providers/provider";
 import { siteConfig } from "@/config/site.config";
 import { layoutConfig } from "@/config/layout.config";
 import { Toaster } from "sonner";
-import {SessionProvider} from "next-auth/react"
+import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth/auth";
+import AppLoader from "@/hoc/app-loader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,9 +31,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-  const session = await auth()
-
+  const session = await auth();
 
   return (
     <html lang="en">
@@ -41,16 +40,18 @@ export default async function RootLayout({
       >
         <Providers>
           <SessionProvider session={session}>
-          <Header />
-          <main
-            className={`bg-white h-[calc(100vh-${layoutConfig.headerHeight}-${layoutConfig.footerHeight})]`}
-            style={{
-              height: `calc(100vh - ${layoutConfig.headerHeight} - ${layoutConfig.footerHeight})`,
-            }}
-          >
-            {children}
-            <Toaster />
-          </main>
+            <AppLoader>
+            <Header />
+              <main
+                className={`bg-white h-[calc(100vh-${layoutConfig.headerHeight}-${layoutConfig.footerHeight})]`}
+                style={{
+                  height: `calc(100vh - ${layoutConfig.headerHeight} - ${layoutConfig.footerHeight})`,
+                }}
+              >
+                {children}
+                <Toaster />
+              </main>
+            </AppLoader>
           </SessionProvider>
         </Providers>
       </body>

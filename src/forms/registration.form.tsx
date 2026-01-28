@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Input, Button, Form } from "@heroui/react";
+import { Input, Button } from "@heroui/react";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { registerUser } from "@/actions/auth.action";
 import { toast } from "sonner";
@@ -45,9 +45,9 @@ const RegistrationForm = ({ onClose, onSwitchToLogin }: IProps) => {
         name: data.name,
         email: data.email,
         password: data.password,
-        confirmPassword:data.confirmPassword
+        confirmPassword: data.confirmPassword
       });
-
+  
       toast.dismiss(toastId);
   
       if (result.error) {
@@ -55,20 +55,23 @@ const RegistrationForm = ({ onClose, onSwitchToLogin }: IProps) => {
         return;
       }
   
-      toast.success('Registration successful!'); 
+      toast.success('Registration successful! Please login.'); 
       reset();
-      onClose();
+      
+      setTimeout(() => {
+        onSwitchToLogin();
+      }, 500);
+      
     } catch (error) {
       console.error('Submission error:', error);
       toast.error('An unexpected error occurred'); 
     }
   };
-  
 
   
 
   return (
-    <Form className="w-full space-y-5" onSubmit={handleSubmit(onSubmit)}>
+    <form className="w-full space-y-5" onSubmit={handleSubmit(onSubmit)}>
       <Input
         {...register("name")}
         label="Full Name"
@@ -146,7 +149,7 @@ const RegistrationForm = ({ onClose, onSwitchToLogin }: IProps) => {
           </button>
         </p>
       </div>
-    </Form>
+    </form>
   );
 };
 

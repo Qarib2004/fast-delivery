@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input, Button, Form } from "@heroui/react";
+import { Input, Button } from "@heroui/react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { FormData, signInSchema } from "@/schema/zod";
 import { signInWithCredentials } from "@/actions/auth.action";
@@ -36,14 +36,15 @@ const LoginForm = ({ onClose }: IProps) => {
       console.log("result:",result)
       toast.dismiss(toastId);
 
-      if (result?.error) {
-        toast.error(result.error);
-        return;
+      if (result?.session) {
+        setAuthState("authenticated", result.session);
+        toast.success('Login successful!');
+        reset();
+        onClose(); 
+        router.refresh(); 
+      } else {
+        toast.error('Session not found');
       }
-
-      toast.success('Login successful!');
-      
-        return result  
     } catch (error) {
       toast.dismiss(toastId);
       console.error('Login error:', error);
@@ -52,7 +53,7 @@ const LoginForm = ({ onClose }: IProps) => {
   };
 
   return (
-    <Form className="w-full space-y-5" onSubmit={handleSubmit(onSubmit)}>
+    <form className="w-full space-y-5" onSubmit={handleSubmit(onSubmit)}>
       <Input
         {...register("email")}
         type="email"
@@ -131,7 +132,7 @@ const LoginForm = ({ onClose }: IProps) => {
           </span>
         </p>
       </div>
-    </Form>
+    </form>
   );
 };
 

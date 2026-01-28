@@ -1,12 +1,12 @@
 "use server";
 import { signIn, signOut } from "@/auth/auth";
-import { IFormData, IRegisterUserParams } from "@/types/form-data";
+import { auth } from "@/auth/auth"; 
+import { IFormData } from "@/types/form-data";
 import { saltAndHashPassword } from "@/utils/password";
 import prisma from "@/utils/prisma";
-import bcrypt from "bcryptjs";
 
 export async function registerUser(params: IFormData) {
-  const {name,email,password,confirmPassword} = params
+  const { name, email, password, confirmPassword } = params;
   try {
     const hashedPassword = await saltAndHashPassword(password);
 
@@ -54,26 +54,46 @@ export async function signInWithCredentials(email: string, password: string) {
       return { error: result.error };
     }
 
-    return result;
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+
+    const session = await auth();
+
+    console.log("Session after login:", session);
+    
+    if (!session) {
+      return { error: "Failed to create session" };
+    }
+
+    return { 
+      success: true, 
+      session: session || null 
+    };
   } catch (error) {
     console.error("Error authorization", error);
+    return { error: "Authentication failed" };
+  }
+}
+
+
+export async function signOutFunc() {
+  try {
+    const result = await signOut({ redirect: false });
+    console.log("result " + result);
+    return result;
+  } catch (error) {
+    console.error("Error for authorization " + error);
     throw error;
   }
 }
 
 
-
-
-
-export async function signOutFunc(){
- 
+export async function getSession() {
   try {
-    const result = await signOut({redirect:false})
-    console.log('result '+result)
-    return result
+    const session = await auth();
+    return session;
   } catch (error) {
-    console.error('Error for authorization ' +error)
-    throw error
+    console.error("Error getting session:", error);
+    return null;
   }
-  
 }
