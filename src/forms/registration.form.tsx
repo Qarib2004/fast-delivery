@@ -7,7 +7,6 @@ import { Input, Button } from "@heroui/react";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { registerUser } from "@/actions/auth.action";
 import { toast } from "sonner";
-import { IFormData, IRegisterUserParams } from "@/types/form-data";
 
 interface IProps {
   onClose: () => void;
@@ -31,7 +30,6 @@ type FormData = z.infer<typeof registrationSchema>;
 const RegistrationForm = ({ onClose, onSwitchToLogin }: IProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [serverError, setServerError] = useState<string>('');
 
 
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<FormData>({

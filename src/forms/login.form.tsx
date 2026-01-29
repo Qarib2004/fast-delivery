@@ -5,10 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input, Button } from "@heroui/react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { FormData, signInSchema } from "@/schema/zod";
-import { signInWithCredentials } from "@/actions/auth.action";
 import { toast } from "sonner";
-import { useAuthStore } from "@/store/auth.store";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 interface IProps {
   onClose: () => void;
@@ -16,7 +15,6 @@ interface IProps {
 
 const LoginForm = ({ onClose }: IProps) => {
   const [showPassword, setShowPassword] = useState(false);
-  const { setAuthState } = useAuthStore();
   const router = useRouter();
 
   const {
@@ -29,26 +27,28 @@ const LoginForm = ({ onClose }: IProps) => {
   });
 
   const onSubmit = async (data: FormData) => {
-    const toastId = toast.loading('Signing in...');
-    
+    const toastId = toast.loading("Signing in...");
     try {
-      const result = await signInWithCredentials(data.email, data.password);
-      console.log("result:",result)
+      const result = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
       toast.dismiss(toastId);
 
-      if (result?.session) {
-        setAuthState("authenticated", result.session);
-        toast.success('Login successful!');
-        reset();
-        onClose(); 
-        router.refresh(); 
-      } else {
-        toast.error('Session not found');
+      if (!result || result.error) {
+        toast.error(result?.error || "Authentication failed");
+        return;
       }
+
+      toast.success("Signed in successfully");
+      reset();
+      onClose();
+      router.refresh();
     } catch (error) {
       toast.dismiss(toastId);
-      console.error('Login error:', error);
-      toast.error('An unexpected error occurred');
+      console.error(error);
+      toast.error("An unexpected error occurred");
     }
   };
 
@@ -126,7 +126,7 @@ const LoginForm = ({ onClose }: IProps) => {
 
       <div className="text-center">
         <p className="text-sm text-gray-600">
-          Don't have an account?{" "}
+          Dont have an account?{" "}
           <span className="text-orange-600 font-medium hover:text-orange-700 hover:underline cursor-pointer">
             Sign Up
           </span>

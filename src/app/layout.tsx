@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { HeroUIProvider } from "@heroui/react";
 import Header from "@/components/UI/layout/header";
 import { Providers } from "@/providers/provider";
 import { siteConfig } from "@/config/site.config";
 import { layoutConfig } from "@/config/layout.config";
 import { Toaster } from "sonner";
 import { SessionProvider } from "next-auth/react";
-import { auth } from "@/auth/auth";
 import AppLoader from "@/hoc/app-loader";
+import { auth } from "@/auth/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

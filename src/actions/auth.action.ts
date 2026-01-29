@@ -1,9 +1,10 @@
 "use server";
+
 import { signIn, signOut } from "@/auth/auth";
-import { auth } from "@/auth/auth"; 
 import { IFormData } from "@/types/form-data";
 import { saltAndHashPassword } from "@/utils/password";
 import prisma from "@/utils/prisma";
+import { Session } from "next-auth";
 
 export async function registerUser(params: IFormData) {
   const { name, email, password, confirmPassword } = params;
@@ -42,6 +43,8 @@ export async function registerUser(params: IFormData) {
   }
 }
 
+
+
 export async function signInWithCredentials(email: string, password: string) {
   try {
     const result = await signIn("credentials", {
@@ -54,27 +57,12 @@ export async function signInWithCredentials(email: string, password: string) {
       return { error: result.error };
     }
 
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-
-    const session = await auth();
-
-    console.log("Session after login:", session);
-    
-    if (!session) {
-      return { error: "Failed to create session" };
-    }
-
-    return { 
-      success: true, 
-      session: session || null 
-    };
+    return { success: true };
   } catch (error) {
     console.error("Error authorization", error);
     return { error: "Authentication failed" };
   }
 }
-
 
 export async function signOutFunc() {
   try {
@@ -88,12 +76,3 @@ export async function signOutFunc() {
 }
 
 
-export async function getSession() {
-  try {
-    const session = await auth();
-    return session;
-  } catch (error) {
-    console.error("Error getting session:", error);
-    return null;
-  }
-}
