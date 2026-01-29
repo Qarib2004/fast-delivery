@@ -1,11 +1,11 @@
-'use client'
+"use client";
 import React from "react";
 import Modal from "../common/modal";
 import LoginForm from "@/forms/login.form";
 
 interface IProps {
-    isOpen: boolean;
-    onClose: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 const LoginModal = ({ isOpen, onClose }: IProps) => {

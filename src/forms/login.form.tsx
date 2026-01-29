@@ -11,9 +11,10 @@ import { signIn } from "next-auth/react";
 
 interface IProps {
   onClose: () => void;
+  onSwitchToRegistration?: () => void;
 }
 
-const LoginForm = ({ onClose }: IProps) => {
+const LoginForm = ({ onClose, onSwitchToRegistration }: IProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
@@ -63,14 +64,16 @@ const LoginForm = ({ onClose }: IProps) => {
         isRequired
         isInvalid={!!errors.email}
         errorMessage={errors.email?.message}
-        startContent={<Mail className="text-gray-400 w-4 h-4" />}
+        startContent={<Mail className="text-black-400 w-4 h-4" />}
         classNames={{
-          label: "text-gray-700 font-medium",
-          input: "text-gray-900",
+          label: "!text-black-700 font-medium",
+          input: "!outline-none !ring-0 focus:!ring-0",
+
           inputWrapper: errors.email
             ? "border-red-500"
-            : "border-gray-300 hover:border-orange-400 focus-within:!border-orange-500",
+            : "border-black-300 hover:border-orange-400 focus-within:!border-orange-500",
         }}
+        
       />
 
       <div>
@@ -83,7 +86,7 @@ const LoginForm = ({ onClose }: IProps) => {
           isRequired
           isInvalid={!!errors.password}
           errorMessage={errors.password?.message}
-          startContent={<Lock className="text-gray-400 w-4 h-4" />}
+          startContent={<Lock className="text-black-400 w-4 h-4" />}
           endContent={
             <button
               type="button"
@@ -91,18 +94,18 @@ const LoginForm = ({ onClose }: IProps) => {
               className="focus:outline-none"
             >
               {showPassword ? (
-                <EyeOff className="text-gray-400 hover:text-gray-600 w-4 h-4" />
+                <EyeOff className="text-black-400 hover:text-black-600 w-4 h-4" />
               ) : (
-                <Eye className="text-gray-400 hover:text-gray-600 w-4 h-4" />
+                <Eye className="text-black-400 hover:text-black-600 w-4 h-4" />
               )}
             </button>
           }
           classNames={{
-            label: "text-gray-700 font-medium",
-            input: "text-gray-900",
+            label: "text-black-700 font-medium",
+            input: "!outline-none !ring-0 focus:!ring-0",
             inputWrapper: errors.password
               ? "border-red-500"
-              : "border-gray-300 hover:border-orange-400 focus-within:!border-orange-500",
+              : "border-black-300 hover:border-orange-400 focus-within:!border-orange-500",
           }}
         />
       </div>
@@ -111,7 +114,7 @@ const LoginForm = ({ onClose }: IProps) => {
         <Button
           variant="light"
           onPress={onClose}
-          className="flex-1 font-medium hover:bg-gray-100"
+          className="flex-1 font-medium hover:bg-black-100"
         >
           Cancel
         </Button>
@@ -125,7 +128,7 @@ const LoginForm = ({ onClose }: IProps) => {
       </div>
 
       <div className="text-center">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-black-600">
           Dont have an account?{" "}
           <span className="text-orange-600 font-medium hover:text-orange-700 hover:underline cursor-pointer">
             Sign Up

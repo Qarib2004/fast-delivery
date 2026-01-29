@@ -79,7 +79,13 @@ const RegistrationForm = ({ onClose, onSwitchToLogin }: IProps) => {
         isInvalid={!!errors.name}
         errorMessage={errors.name?.message}
         startContent={<User className="text-gray-400 w-4 h-4" />}
-      />
+        classNames={{
+          label: "text-black-700 font-medium",
+          input: "!outline-none !ring-0 focus:!ring-0",
+          inputWrapper: errors.password
+            ? "border-red-500"
+            : "border-black-300 hover:border-orange-400 focus-within:!border-orange-500",
+        }}      />
 
       <Input
         {...register("email")}
@@ -91,6 +97,13 @@ const RegistrationForm = ({ onClose, onSwitchToLogin }: IProps) => {
         isInvalid={!!errors.email}
         errorMessage={errors.email?.message}
         startContent={<Mail className="text-gray-400 w-4 h-4" />}
+        classNames={{
+          label: "text-black-700 font-medium",
+          input: "!outline-none !ring-0 focus:!ring-0",
+          inputWrapper: errors.password
+            ? "border-red-500"
+            : "border-black-300 hover:border-orange-400 focus-within:!border-orange-500",
+        }}
       />
 
       <Input
@@ -108,6 +121,13 @@ const RegistrationForm = ({ onClose, onSwitchToLogin }: IProps) => {
             {showPassword ? <EyeOff className="w-4 h-4 text-gray-400" /> : <Eye className="w-4 h-4 text-gray-400" />}
           </button>
         }
+        classNames={{
+          label: "text-black-700 font-medium",
+          input: "!outline-none !ring-0 focus:!ring-0",
+          inputWrapper: errors.password
+            ? "border-red-500"
+            : "border-black-300 hover:border-orange-400 focus-within:!border-orange-500",
+        }}
       />
 
       <Input
@@ -125,6 +145,13 @@ const RegistrationForm = ({ onClose, onSwitchToLogin }: IProps) => {
             {showConfirmPassword ? <EyeOff className="w-4 h-4 text-gray-400" /> : <Eye className="w-4 h-4 text-gray-400" />}
           </button>
         }
+        classNames={{
+          label: "text-black-700 font-medium",
+          input: "!outline-none !ring-0 focus:!ring-0",
+          inputWrapper: errors.password
+            ? "border-red-500"
+            : "border-black-300 hover:border-orange-400 focus-within:!border-orange-500",
+        }}
       />
 
       <div className="flex gap-3 pt-4">

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useAuthStore } from "@/store/auth.store";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
@@ -12,7 +12,6 @@ const AppLoader = ({ children }: IProps) => {
   const { setAuthState } = useAuthStore();
 
   useEffect(() => {
-    
     if (status === "loading") {
       setAuthState("loading", null);
     } else if (status === "authenticated" && session) {

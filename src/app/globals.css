@@ -1,18 +1,25 @@
 @import "tailwindcss";
 @plugin './hero.ts';
 @source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
- @custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is(.dark *));
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --header-height: 4rem;
+  --footer-height: 60px;
+  --main-height: calc(100vh - var(--header-height) - var(--footer-height));
+  --color-primary: 24 119 242;
+  --color-primary-500: #f97316;
+  --color-primary-600: #ea580c;
+  --color-primary-50: #fff7ed;
+  --radius-modal: 1rem;
+  --radius-button: 0.75rem;
+  --shadow-modal: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --z-header: 40;
+  --z-sidebar-overlay: 50;
+  --z-sidebar: 60;
+  --z-modal: 100;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,8 +29,47 @@
   }
 }
 
+
+
+
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Safe area for mobile */
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Focus visible for accessibility */
+:focus-visible:not(textarea) {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+
+/* Modal backdrop */
+.modal-backdrop {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+/* Auth form inputs - consistent focus ring */
+.auth-input:focus-within {
+  --tw-ring-color: var(--color-primary-500);
 }

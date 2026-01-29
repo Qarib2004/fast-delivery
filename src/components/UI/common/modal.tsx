@@ -17,7 +17,13 @@ const sizeClasses: Record<string, string> = {
   xl: "max-w-xl",
 };
 
-const Modal: React.FC<IProps> = ({ isOpen, onClose, children, size = "md", title }) => {
+const Modal: React.FC<IProps> = ({
+  isOpen,
+  onClose,
+  children,
+  size = "md",
+  title,
+}) => {
   if (!isOpen) return null;
 
   return (
