@@ -35,14 +35,14 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased]`}
       >
         <Providers>
           <SessionProvider session={session}>
             <AppLoader>
             <Header />
               <main
-                className={`bg-white h-[calc(100vh-${layoutConfig.headerHeight}-${layoutConfig.footerHeight})]`}
+                className={`h-[calc(100vh-${layoutConfig.headerHeight}-${layoutConfig.footerHeight})]`}
                 style={{
                   height: `calc(100vh - ${layoutConfig.headerHeight} - ${layoutConfig.footerHeight})`,
                 }}

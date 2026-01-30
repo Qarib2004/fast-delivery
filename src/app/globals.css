@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #ffffff;
+  --background: #fcf8f2;
   --foreground: #171717;
   --header-height: 4rem;
   --footer-height: 60px;
@@ -22,12 +22,7 @@
   --z-modal: 100;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+
 
 
 
