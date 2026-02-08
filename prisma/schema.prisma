@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
   output = "../src/generated/prisma"
@@ -8,9 +7,6 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-
-
 
 model User {
   id        String   @id @default(uuid())
@@ -67,21 +63,81 @@ model Session {
   @@map("sessions")
 }
 
-model Product {
-  id          String       @id @default(uuid())
-  name        String
-  description String?      @db.Text
-  price       Decimal      @db.Decimal(10, 2)
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?   @db.Text
   image       String?
-  stock       Int          @default(0)
-  category    String?
-  reviews     Review[]
-  favorites   Favorite[]
-  basketItems BasketItem[]
-  ratings     Rating[]
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
+  icon        String?
+  order       Int       @default(0)
+  isActive    Boolean   @default(true) @map("is_active")
+  products    Product[]
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
+  @@map("categories")
+}
+
+model Restaurant {
+  id               String    @id @default(uuid())
+  name             String
+  slug             String    @unique
+  description      String?   @db.Text
+  logo             String?
+  coverImage       String?   @map("cover_image")
+  address          String
+  city             String
+  phone            String?
+  email            String?
+  rating           Decimal?  @db.Decimal(3, 2)
+  reviewCount      Int       @default(0) @map("review_count")
+  deliveryTime     String?   @map("delivery_time") // например "20-30 min"
+  deliveryFee      Decimal?  @db.Decimal(10, 2) @map("delivery_fee")
+  minOrder         Decimal?  @db.Decimal(10, 2) @map("min_order")
+  isActive         Boolean   @default(true) @map("is_active")
+  isFeatured       Boolean   @default(false) @map("is_featured")
+  isOpen           Boolean   @default(true) @map("is_open")
+  openingHours     Json?     @map("opening_hours") // JSON формат для часов работы
+  tags             String[]  @default([])
+  cuisineTypes     String[]  @default([]) @map("cuisine_types") // например ["Italian", "Pizza"]
+  products         Product[]
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  @@index([slug])
+  @@index([isActive])
+  @@index([isFeatured])
+  @@map("restaurants")
+}
+
+model Product {
+  id           String       @id @default(uuid())
+  name         String
+  slug         String       @unique
+  description  String?      @db.Text
+  price        Decimal      @db.Decimal(10, 2)
+  image        String?
+  images       String[]     @default([])
+  stock        Int          @default(0)
+  categoryId   String?      @map("category_id")
+  category     Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  restaurantId String?      @map("restaurant_id")
+  restaurant   Restaurant?  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  isActive     Boolean      @default(true) @map("is_active")
+  isFeatured   Boolean      @default(false) @map("is_featured")
+  discount     Decimal?     @db.Decimal(5, 2)
+  tags         String[]     @default([])
+  reviews      Review[]
+  favorites    Favorite[]
+  basketItems  BasketItem[]
+  ratings      Rating[]
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  @@index([categoryId])
+  @@index([restaurantId])
+  @@index([slug])
   @@map("products")
 }
 
@@ -102,7 +158,7 @@ model Review {
 
 model Rating {
   id        String   @id @default(uuid())
-  productId String   @map("product_id")
+  productId String   @unique @map("product_id")
   value     Int
   count     Int      @default(0)
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
