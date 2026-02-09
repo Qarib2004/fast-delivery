@@ -92,16 +92,17 @@ model Restaurant {
   email            String?
   rating           Decimal?  @db.Decimal(3, 2)
   reviewCount      Int       @default(0) @map("review_count")
-  deliveryTime     String?   @map("delivery_time") // например "20-30 min"
+  deliveryTime     String?   @map("delivery_time")
   deliveryFee      Decimal?  @db.Decimal(10, 2) @map("delivery_fee")
   minOrder         Decimal?  @db.Decimal(10, 2) @map("min_order")
   isActive         Boolean   @default(true) @map("is_active")
   isFeatured       Boolean   @default(false) @map("is_featured")
   isOpen           Boolean   @default(true) @map("is_open")
-  openingHours     Json?     @map("opening_hours") // JSON формат для часов работы
+  openingHours     Json?     @map("opening_hours")
   tags             String[]  @default([])
-  cuisineTypes     String[]  @default([]) @map("cuisine_types") // например ["Italian", "Pizza"]
+  cuisineTypes     String[]  @default([]) @map("cuisine_types")
   products         Product[]
+  favorites        Favorite[]
   createdAt        DateTime  @default(now()) @map("created_at")
   updatedAt        DateTime  @updatedAt @map("updated_at")
 
@@ -169,14 +170,17 @@ model Rating {
 }
 
 model Favorite {
-  id        String   @id @default(uuid())
-  userId    String   @map("user_id")
-  productId String   @map("product_id")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now()) @map("created_at")
+  id           String      @id @default(uuid())
+  userId       String      @map("user_id")
+  productId    String?     @map("product_id")
+  restaurantId String?     @map("restaurant_id")
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product      Product?    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  restaurant   Restaurant? @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime    @default(now()) @map("created_at")
 
   @@unique([userId, productId])
+  @@unique([userId, restaurantId])
   @@map("favorites")
 }
 

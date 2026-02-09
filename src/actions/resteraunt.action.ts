@@ -40,6 +40,13 @@ export type RestaurantFilters = {
   minRating?: number
 }
 
+
+
+export type FavoriteRestaurantInput = {
+  userId: string
+  restaurantId: string
+}
+
 export async function createRestaurant(data: RestaurantInput) {
   try {
     const restaurant = await prisma.restaurant.create({
@@ -448,5 +455,40 @@ export async function updateRestaurantRating(id: string, rating: number, reviewC
   } catch (error) {
     console.error('Error updating restaurant rating:', error)
     return { success: false, error: 'Failed to update restaurant rating' }
+  }
+}
+
+
+
+
+
+export async function toggleFavoriteRestaurant(data: FavoriteRestaurantInput) {
+  try {
+    const { userId, restaurantId } = data
+
+    const [user, restaurant] = await Promise.all([
+      prisma.user.findUnique({ where: { id: userId } }),
+      prisma.restaurant.findUnique({ where: { id: restaurantId } }),
+    ])
+
+    if (!user) {
+      return { success: false, error: 'User not found' }
+    }
+
+    if (!restaurant) {
+      return { success: false, error: 'Restaurant not found' }
+    }
+
+
+    revalidatePath('/restaurants')
+    revalidatePath(`/restaurants/${restaurant.slug}`)
+
+    return {
+      success: true,
+      message: 'Toggled favorite restaurant',
+    }
+  } catch (error) {
+    console.error('Error toggling favorite restaurant:', error)
+    return { success: false, error: 'Failed to toggle favorite restaurant' }
   }
 }

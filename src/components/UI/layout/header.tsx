@@ -41,8 +41,8 @@ export default function Header() {
             mobile ? "block py-3 px-4 rounded-lg" : ""
           } ${
             isActive
-              ? "text-orange-500 bg-orange-50"
-              : "text-gray-700 hover:text-orange-500 hover:bg-orange-50"
+              ? "text-orange-500"
+              : "text-gray-700 hover:text-orange-500 "
           }`}
         >
           {item.label}

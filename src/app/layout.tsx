@@ -9,6 +9,7 @@ import { Toaster } from "sonner";
 import { SessionProvider } from "next-auth/react";
 import AppLoader from "@/hoc/app-loader";
 import { auth } from "@/auth/auth";
+import AuthSyncProvider from "@/providers/auth-sync-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
