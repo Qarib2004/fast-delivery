@@ -7,7 +7,7 @@ import { toggleFavoriteRestaurant } from "@/actions/favorite.action"
 import { useAuthStore } from "@/store/auth.store"
 import { toast } from "sonner"
 
-type Restaurant = {
+export type Restaurant = {
   id: string
   name: string
   slug: string

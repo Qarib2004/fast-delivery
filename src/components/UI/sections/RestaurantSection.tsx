@@ -1,5 +1,6 @@
 import { getRestaurants } from "@/actions/resteraunt.action"
 import RestaurantCard from "@/components/UI/cards/RestaurantCard"
+import { serializeRestaurants } from "@/utils/serialize"
 import { ChevronRight, UtensilsCrossed } from "lucide-react"
 import Link from "next/link"
 
@@ -9,7 +10,7 @@ const RestaurantSection = async () => {
     return null
   }
 
-  const restaurants = result.data.slice(0, 12)
+  const restaurants = serializeRestaurants(result.data.slice(0, 12))
 
   return (
     <section className="w-full px-4  sm:px-8 md:px-16 lg:px-24 xl:px-40 py-12 md:py-16">
