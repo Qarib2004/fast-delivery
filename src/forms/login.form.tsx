@@ -14,7 +14,7 @@ interface IProps {
   onSwitchToRegistration?: () => void;
 }
 
-const LoginForm = ({ onClose, onSwitchToRegistration }: IProps) => {
+const LoginForm = ({ onClose }: IProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 

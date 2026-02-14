@@ -1,5 +1,5 @@
 'use client'
-import { Search, Timer } from "lucide-react";
+import { Timer } from "lucide-react";
 import React from "react";
 import SearchBar from "../search/SearchBar";
 

@@ -1,5 +1,6 @@
 import { getCategories } from "@/actions/category.action";
 import { ChevronRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
@@ -47,7 +48,7 @@ const CategorySection = async () => {
             <div className="flex flex-col items-center gap-2 p-3 sm:p-4 rounded-2xl bg-white border-2 border-gray-100 hover:border-orange-400 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
               {category.image ? (
                 <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl overflow-hidden bg-gradient-to-br from-orange-100 to-orange-200 p-1 group-hover:scale-110 transition-transform duration-300">
-                  <img
+                  <Image
                     src={category.image}
                     alt={category.name}
                     className="w-full h-full object-cover rounded-lg"
