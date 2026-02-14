@@ -2,15 +2,16 @@ import prisma from '@/utils/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
 type RouteParams = {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
+    const {id} = await params
     const restaurant = await prisma.restaurant.findUnique({
-      where: { id: params.id },
+      where: { id:id },
       select: { isOpen: true },
     })
 
@@ -22,7 +23,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     }
 
     const updatedRestaurant = await prisma.restaurant.update({
-      where: { id: params.id },
+      where: { id: id },
       data: { isOpen: !restaurant.isOpen },
     })
 
