@@ -1,6 +1,7 @@
 'use client'
 import { Search, Timer } from "lucide-react";
 import React from "react";
+import SearchBar from "../search/SearchBar";
 
 const HeroSection = () => {
   return (
@@ -28,17 +29,8 @@ const HeroSection = () => {
         </div>
         
         <div className="relative w-full max-w-md mt-3">
-          <input
-            type="text"
-            placeholder="Find restaurants or foods..."
-            className="w-full border border-gray-300 rounded-full px-10 sm:px-12 py-2 sm:py-2.5 pr-24 sm:pr-28 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base"
-          />
+        <SearchBar />
 
-          <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4 sm:w-5 sm:h-5" />
-
-          <button className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-orange-500 text-white px-3 sm:px-4 py-1 sm:py-1.5 rounded-full hover:bg-orange-600 transition text-sm sm:text-base">
-            Search
-          </button>
         </div>
       </div>
       

@@ -4,7 +4,7 @@ export const siteConfig = {
     navItems: [
         { href: "/", label: "Main" },
         { href: "/restaurants", label: "Restaurants" },
-        { href: "/stock", label: "Stock" },
+        { href: "/favorites", label: "Favotites" },
         { href: "/about", label: "About" },
       ]
 }

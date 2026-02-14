@@ -5,10 +5,12 @@ import { MapPin, ShoppingBasket, User, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import RegistrationModal from "../modals/registration.modal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LoginModal from "../modals/login.modal";
 import { signOutFunc } from "@/actions/auth.action";
 import { useAuthStore } from "@/store/auth.store";
+import BasketSidebar from "@/components/UI/basket/BasketSidebar";
+import { getBasketItemsCount } from "@/actions/basket.action";
 
 export default function Header() {
   const pathname = usePathname();
@@ -16,6 +18,31 @@ export default function Header() {
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isBasketOpen, setIsBasketOpen] = useState(false);
+  const [basketCount, setBasketCount] = useState(0);
+
+  useEffect(() => {
+    if (isAuth && session?.user?.id) {
+      loadBasketCount();
+    } else {
+      setBasketCount(0);
+    }
+  }, [isAuth, session]);
+
+  useEffect(() => {
+    if (isAuth && session?.user?.id && !isBasketOpen) {
+      loadBasketCount();
+    }
+  }, [isBasketOpen, isAuth, session]);
+
+  const loadBasketCount = async () => {
+    if (!session?.user?.id) return;
+
+    const result = await getBasketItemsCount(session.user.id);
+    if (result.success) {
+      setBasketCount(result.count);
+    }
+  };
 
   const handleSignOut = async () => {
     try {
@@ -26,6 +53,15 @@ export default function Header() {
 
     setAuthState("unauthenticated", null);
     setIsMobileMenuOpen(false);
+    setBasketCount(0);
+  };
+
+  const handleBasketClick = () => {
+    if (!isAuth) {
+      setIsLoginOpen(true);
+      return;
+    }
+    setIsBasketOpen(true);
   };
 
   const getNavItems = (mobile = false) => {
@@ -78,11 +114,16 @@ export default function Header() {
                 <span className="hidden md:inline">Baku</span>
               </Link>
 
-              <button className="relative p-2 text-gray-700 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-all duration-200">
-                <ShoppingBasket className="w-5 h-5" />
-                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                  2
-                </span>
+              <button
+                onClick={handleBasketClick}
+                className="relative p-2 text-gray-700 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-all duration-200 group"
+              >
+                <ShoppingBasket className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                {basketCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
+                    {basketCount > 9 ? "9+" : basketCount}
+                  </span>
+                )}
               </button>
 
               <div className="hidden sm:flex items-center gap-3">
@@ -191,7 +232,15 @@ export default function Header() {
         }}
       />
 
-      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+      <LoginModal 
+        isOpen={isLoginOpen} 
+        onClose={() => setIsLoginOpen(false)} 
+      />
+
+      <BasketSidebar 
+        isOpen={isBasketOpen} 
+        onClose={() => setIsBasketOpen(false)} 
+      />
 
       {isMobileMenuOpen && (
         <div
