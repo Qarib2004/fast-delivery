@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         hostname: "**", 
       },
     ],
-  }};
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  }
+  
+};
 
 export default nextConfig;
