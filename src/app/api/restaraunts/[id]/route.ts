@@ -2,15 +2,16 @@ import prisma from '@/utils/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
 type RouteParams = {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
+    const {id} = await params
     const restaurant = await prisma.restaurant.findUnique({
-      where: { id: params.id },
+      where: { id: id },
       include: {
         products: {
           where: { isActive: true },
@@ -53,9 +54,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     const body = await request.json()
+    const {id} = await params
 
     const existingRestaurant = await prisma.restaurant.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     })
 
     if (!existingRestaurant) {
@@ -84,7 +86,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     if (body.reviewCount) body.reviewCount = parseInt(body.reviewCount)
 
     const restaurant = await prisma.restaurant.update({
-      where: { id: params.id },
+      where: { id: id },
       data: body,
       include: {
         _count: {
@@ -109,8 +111,11 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
+
+    const {id} = await params
+
     const productsCount = await prisma.product.count({
-      where: { restaurantId: params.id },
+      where: { restaurantId: id },
     })
 
     if (productsCount > 0) {
@@ -124,7 +129,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     await prisma.restaurant.delete({
-      where: { id: params.id },
+      where: { id: id },
     })
 
     return NextResponse.json({

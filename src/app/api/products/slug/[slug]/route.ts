@@ -2,15 +2,16 @@ import prisma from '@/utils/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
 type RouteParams = {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
+    const {slug} = await params
     const product = await prisma.product.findUnique({
-      where: { slug: params.slug },
+      where: { slug: slug },
       include: {
         category: true,
         restaurant: true,

@@ -2,16 +2,17 @@ import prisma from '@/utils/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
 type RouteParams = {
-  params: {
+  params: Promise<{
     city: string
-  }
+  }>
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
+    const {city} = await params
     const restaurants = await prisma.restaurant.findMany({
       where: {
-        city: { contains: params.city, mode: 'insensitive' },
+        city: { contains: city, mode: 'insensitive' },
         isActive: true,
       },
       include: {

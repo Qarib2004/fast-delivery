@@ -2,15 +2,16 @@ import prisma from '@/utils/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
 interface Params {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export async function GET(request: NextRequest, { params }: Params) {
   try {
+    const { id } = await params
     const category = await prisma.category.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         products: {
           take: 10,
@@ -44,10 +45,11 @@ export async function GET(request: NextRequest, { params }: Params) {
 
 export async function PATCH(request: NextRequest, { params }: Params) {
   try {
+    const { id } = await params
     const body = await request.json()
 
     const existingCategory = await prisma.category.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!existingCategory) {
@@ -71,7 +73,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     }
 
     const category = await prisma.category.update({
-      where: { id: params.id },
+      where: { id },
       data: body,
     })
 
@@ -91,8 +93,9 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
 export async function DELETE(request: NextRequest, { params }: Params) {
   try {
+    const { id } = await params
     const productsCount = await prisma.product.count({
-      where: { categoryId: params.id },
+      where: { categoryId: id },
     })
 
     if (productsCount > 0) {
@@ -106,7 +109,7 @@ export async function DELETE(request: NextRequest, { params }: Params) {
     }
 
     await prisma.category.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     return NextResponse.json({
