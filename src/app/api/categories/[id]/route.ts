@@ -1,14 +1,13 @@
-// src/app/api/categories/[id]/route.ts
 import prisma from '@/utils/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
-type RouteParams = {
+interface Params {
   params: {
     id: string
   }
 }
 
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(request: NextRequest, { params }: Params) {
   try {
     const category = await prisma.category.findUnique({
       where: { id: params.id },
@@ -43,7 +42,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: RouteParams) {
+export async function PATCH(request: NextRequest, { params }: Params) {
   try {
     const body = await request.json()
 
@@ -90,7 +89,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(request: NextRequest, { params }: Params) {
   try {
     const productsCount = await prisma.product.count({
       where: { categoryId: params.id },
